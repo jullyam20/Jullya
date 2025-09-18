@@ -1,0 +1,157 @@
+<!--
+  Arquivo: index.html
+  Uso: Salve este arquivo como index.html na raiz do seu repositório GitHub.
+  Coloque as imagens na pasta /images (por ex.: images/album1.jpg) e ajuste os textos abaixo.
+  Observações:
+  - O nome da cantora no site já está como "Camila Cabello".
+  - Essa página tem uma barra de acessibilidade no canto superior direito com:
+      A+ (aumenta fonte), A- (diminui fonte), contraste (alterna alto contraste).
+  - Para trocar cores, edite as variáveis CSS no :root.
+--><!doctype html>
+
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Camila Cabello — Fanpage</title>
+  <style>
+    :root {
+      --bg: #fff;
+      --text: #111;
+      --accent: #c4161c; /* vermelho */
+      --muted: #faf0f0;
+      --base-font-size: 16px;
+    }
+    html { font-size: var(--base-font-size); }
+    body { margin:0; font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; background:var(--bg); color:var(--text); line-height:1.4; }
+    .header { background: linear-gradient(90deg,var(--accent), #aa0f12); color:var(--bg); padding:1.25rem; text-align:center;}
+    .container { max-width:900px; margin: 1.5rem auto; padding: 0 1rem;}
+    h1 { margin:0; font-size:2rem; }
+    h2 { margin-top:1.25rem; }/* Barra de acessibilidade (canto superior direito) */
+.toolbar { position:fixed; top:12px; right:12px; display:flex; flex-direction:column; gap:8px; z-index:1000; }
+.tool-btn { width:44px; height:44px; border-radius:8px; border:1px solid rgba(0,0,0,0.08); background:var(--bg); color:var(--accent); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:1rem; cursor:pointer; box-shadow:0 2px 6px rgba(0,0,0,0.08);}    
+.tool-btn:focus { outline:3px solid rgba(196,22,28,0.25); }
+
+/* Grid de álbuns */
+.album-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:1rem; margin-top:1rem; }
+.album { background:var(--muted); padding:0.75rem; border-radius:12px; text-align:center;}
+.album img { width:100%; height:auto; border-radius:8px; display:block; margin-bottom:0.5rem;}
+
+/* Alto contraste */
+.high-contrast {
+  --bg: #000;
+  --text: #fff;
+  --accent: #ffd400;
+  --muted: #111;
+}
+
+.visually-hidden { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0 0 0 0); border:0; }
+.status { position:fixed; bottom:12px; left:12px; background:rgba(0,0,0,0.6); color:#fff; padding:6px 10px; border-radius:8px; font-size:0.85rem; display:none; }
+@media (prefers-reduced-motion: reduce) { * { transition:none !important; } }
+
+  </style>
+</head>
+<body>
+  <div class="toolbar" aria-hidden="false">
+    <button class="tool-btn" id="btn-increase" aria-label="Aumentar fonte">A+</button>
+    <button class="tool-btn" id="btn-decrease" aria-label="Diminuir fonte">A-</button>
+    <button class="tool-btn" id="btn-contrast" aria-pressed="false" aria-label="Alternar alto contraste" title="Alto contraste">
+      <!-- ícone: círculo meio preenchido -->
+      <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path d="M12 2a10 10 0 1 0 0 20V2z" fill="currentColor"></path>
+        <path d="M12 2a10 10 0 0 1 0 20V2z" fill="rgba(0,0,0,0.12)"></path>
+      </svg>
+    </button>
+  </div>  <header class="header">
+    <h1>Camila Cabello</h1>
+    <p id="subtitle">Página criada com foco em tons vermelho e branco — personalize com suas imagens.</p>
+  </header>  <main class="container" id="maincontent">
+    <section id="bio">
+      <h2>Biografia (resumo)</h2>
+      <p>Adicione aqui informações verificadas sobre Camila Cabello. Substitua este parágrafo pelo texto que desejar — procure fontes oficiais como o site da artista, gravadora ou perfis verificados.</p>
+    </section><section id="albums">
+  <h2>Álbuns</h2>
+  <div class="album-grid">
+    <!-- Exemplo de cartão de álbum: substitua os src/alt/textos pelo conteúdo real -->
+    <article class="album">
+      <img src="images/album1.jpg" alt="Álbum 1 — substitua pela imagem real">
+      <strong>Nome do Álbum 1</strong>
+      <div>Ano</div>
+    </article>
+
+    <article class="album">
+      <img src="images/album2.jpg" alt="Álbum 2 — substitua pela imagem real">
+      <strong>Nome do Álbum 2</strong>
+      <div>Ano</div>
+    </article>
+
+    <article class="album">
+      <img src="images/album3.jpg" alt="Álbum 3 — substitua pela imagem real">
+      <strong>Nome do Álbum 3</strong>
+      <div>Ano</div>
+    </article>
+  </div>
+</section>
+
+  </main>  <div class="status" id="status" role="status" aria-live="polite"></div>  <script>
+    (function() {
+      const minSize = 12;
+      const maxSize = 26;
+      const step = 2;
+      const storageKey = 'siteFontSize';
+      const contrastKey = 'siteContrast';
+
+      function getFontSize() {
+        const v = parseInt(localStorage.getItem(storageKey), 10);
+        if (!isNaN(v)) return v;
+        return parseInt(getComputedStyle(document.documentElement).fontSize, 10) || 16;
+      }
+      function setFontSize(px) {
+        px = Math.max(minSize, Math.min(maxSize, px));
+        document.documentElement.style.fontSize = px + 'px';
+        localStorage.setItem(storageKey, px);
+        showStatus('Tamanho da fonte: ' + px + 'px');
+      }
+
+      function showStatus(text) {
+        const s = document.getElementById('status');
+        s.textContent = text;
+        s.style.display = 'block';
+        clearTimeout(showStatus._t);
+        showStatus._t = setTimeout(()=> s.style.display='none', 1200);
+      }
+
+      function increase() { setFontSize(getFontSize() + step); }
+      function decrease() { setFontSize(getFontSize() - step); }
+
+      // Contrast
+      function setContrast(on) {
+        if (on) document.documentElement.classList.add('high-contrast');
+        else document.documentElement.classList.remove('high-contrast');
+        localStorage.setItem(contrastKey, on ? '1' : '0');
+        document.getElementById('btn-contrast').setAttribute('aria-pressed', on ? 'true' : 'false');
+      }
+
+      // init
+      document.getElementById('btn-increase').addEventListener('click', increase);
+      document.getElementById('btn-decrease').addEventListener('click', decrease);
+      document.getElementById('btn-contrast').addEventListener('click', ()=> {
+        const isOn = document.documentElement.classList.contains('high-contrast');
+        setContrast(!isOn);
+      });
+
+      // keyboard activation (Enter/Space)
+      document.querySelectorAll('.tool-btn').forEach(btn=>{
+        btn.addEventListener('keydown', e=>{
+          if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); btn.click(); }
+        });
+      });
+
+      // restore preferences
+      setFontSize(getFontSize());
+      setContrast(localStorage.getItem(contrastKey) === '1');
+
+      // Guidance: coloque suas imagens na pasta /images do repositório (nomes ex.: album1.jpg)
+    })();
+  </script></body>
+</html>
